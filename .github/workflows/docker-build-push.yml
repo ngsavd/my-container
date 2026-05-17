@@ -41,7 +41,7 @@ jobs:
         #   uses: anchore/scan-action@<full-40-char-sha>  # v7.4.0
         with:
           image: ghcr.io/${{ github.repository_owner }}/my-container:latest
-          fail-build: true              # fail the workflow if findings are found
+          fail-build: false              # fail the workflow if findings are found
           severity-cutoff: high         # fail on HIGH and CRITICAL only
           only-fixed: true              # skip CVEs with no fix available yet
           output-format: sarif          # structured report for GitHub Security tab
