@@ -39,6 +39,15 @@ RUN wget -q "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terra
     && rm /tmp/terraform.zip \
     && terraform version
 
+# ── Infracost (pinned, installed from release tarball) ───────
+RUN wget -q "https://github.com/infracost/infracost/releases/download/v${INFRACOST_VERSION}/infracost-linux-amd64.tar.gz" \
+      -O /tmp/infracost.tar.gz \
+    && tar -xzf /tmp/infracost.tar.gz -C /tmp \
+    && mv /tmp/infracost-linux-amd64 /usr/local/bin/infracost \
+    && chmod +x /usr/local/bin/infracost \
+    && rm /tmp/infracost.tar.gz \
+    && infracost --version
+    
 # ── Python packages (matches: pip install in workflow) ───────
 RUN pip3 install --no-cache-dir --break-system-packages \
       openai \
