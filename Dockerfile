@@ -41,7 +41,7 @@ RUN wget -q "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terra
 
 # ── Infracost (pinned, from release tarball — not GitHub Action) ──
 RUN curl -fsSL \
-      https://github.com/infracost/infracost/releases/download/v${INFRACOST_VERSION}/infracost-linux-amd64.tar.gz \
+      https://github.com/infracost/infracost/releases/download/v0.10.44/infracost-linux-amd64.tar.gz \
       -o /tmp/infracost.tar.gz \
     && tar -xzf /tmp/infracost.tar.gz -C /tmp \
     && mv /tmp/infracost-linux-amd64 /usr/local/bin/infracost \
