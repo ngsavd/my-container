@@ -34,7 +34,7 @@ jobs:
       # Scans locally — nothing about your image is sent externally.
       - name: Scan image for vulnerabilities (Grype)
         id: scan
-        uses: anchore/scan-action@e116508b6b1a1543a56048898b7df87bac4d4af8  # v7.4.0
+        uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2  # v7.4.0
         with:
           image: ghcr.io/${{ github.repository_owner }}/my-container:latest
           fail-build: true              # fail the workflow if findings are found
