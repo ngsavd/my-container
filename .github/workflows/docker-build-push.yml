@@ -11,7 +11,8 @@ jobs:
 
     permissions:
       contents: read
-      packages: write  # needed to push to GHCR
+      packages: write        # push to GHCR
+      security-events: write # upload Grype SARIF results to GitHub Security tab
 
     steps:
       - name: Checkout code
@@ -27,5 +28,28 @@ jobs:
       - name: Build the image
         run: docker build -t ghcr.io/${{ github.repository_owner }}/my-container:latest .
 
+      # ── Grype scan runs BEFORE push ──────────────────────────
+      # Pinned to commit SHA instead of a version tag to prevent
+      # supply chain attacks (e.g. the Trivy incident March 2026).
+      # Scans locally — nothing about your image is sent externally.
+      - name: Scan image for vulnerabilities (Grype)
+        id: scan
+        uses: anchore/scan-action@e116508b6b1a1543a56048898b7df87bac4d4af8  # v7.4.0
+        with:
+          image: ghcr.io/${{ github.repository_owner }}/my-container:latest
+          fail-build: true              # fail the workflow if findings are found
+          severity-cutoff: high         # fail on HIGH and CRITICAL only
+          only-fixed: true              # skip CVEs with no fix available yet
+          output-format: sarif          # structured report for GitHub Security tab
+
+      # Upload results to GitHub Security tab even if the scan fails
+      # so you can review what was found before deciding to unblock
+      - name: Upload Grype results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()   # run even when the scan step fails
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+
+      # Only pushes if the scan passed
       - name: Push the image
         run: docker push ghcr.io/${{ github.repository_owner }}/my-container:latest
