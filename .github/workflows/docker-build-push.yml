@@ -34,7 +34,11 @@ jobs:
       # Scans locally — nothing about your image is sent externally.
       - name: Scan image for vulnerabilities (Grype)
         id: scan
-        uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2  # v7.4.0
+        uses: anchore/scan-action@v7.4.0
+        # TODO: Harden by pinning to full 40-char SHA instead of the version tag.
+        # Go to https://github.com/anchore/scan-action/releases/tag/v7.4.0,
+        # click the short SHA, copy the full SHA from the URL, then replace with:
+        #   uses: anchore/scan-action@<full-40-char-sha>  # v7.4.0
         with:
           image: ghcr.io/${{ github.repository_owner }}/my-container:latest
           fail-build: true              # fail the workflow if findings are found
@@ -45,7 +49,9 @@ jobs:
       # Upload results to GitHub Security tab even if the scan fails
       # so you can review what was found before deciding to unblock
       - name: Upload Grype results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
+        # REQUIREMENT: Repo must be PUBLIC for GitHub Free accounts.
+        # Private repos need GitHub Advanced Security to use code scanning.
         if: always()   # run even when the scan step fails
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
