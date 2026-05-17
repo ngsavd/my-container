@@ -8,6 +8,7 @@ FROM alpine:3.23.4
 # ── Pinned versions ──────────────────────────────────────────
 ARG TERRAFORM_VERSION=1.7.0
 ARG TARGETARCH=amd64
+ARG TFLINT_VERSION=0.55.0
 
 LABEL maintainer="Calix" \
       description="Infra tooling image for Terraform LLM PR Review workflow"
@@ -49,6 +50,16 @@ RUN curl -fsSL \
     && rm /tmp/infracost.tar.gz \
     && infracost --version
 
+# ── TFLint (pinned to match workflow: tflint_version 0.55.0) ───────────────
+RUN curl -fsSL \
+      https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_linux_amd64.zip \
+      -o /tmp/tflint.zip \
+    && unzip /tmp/tflint.zip -C /tmp \
+    && mv /tmp/tflint /usr/local/bin/tflint \
+    && chmod +x /usr/local/bin/tflint \
+    && rm /tmp/tflint.zip \
+    && tflint --version
+    
 # ── Python packages (matches: pip install in workflow) ───────
 RUN pip3 install --no-cache-dir --break-system-packages \
       openai \
