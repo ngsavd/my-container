@@ -46,16 +46,6 @@ jobs:
           only-fixed: true              # skip CVEs with no fix available yet
           output-format: sarif          # structured report for GitHub Security tab
 
-      # Upload results to GitHub Security tab even if the scan fails
-      # so you can review what was found before deciding to unblock
-      - name: Upload Grype results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v4
-        # REQUIREMENT: Repo must be PUBLIC for GitHub Free accounts.
-        # Private repos need GitHub Advanced Security to use code scanning.
-        if: always()   # run even when the scan step fails
-        with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
-
       # Only pushes if the scan passed
       - name: Push the image
         run: docker push ghcr.io/${{ github.repository_owner }}/my-container:latest
