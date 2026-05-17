@@ -3,7 +3,7 @@
 # Optimized for: Terraform LLM PR Review workflow
 # Base: Alpine 3.21 (active CVE support)
 # ─────────────────────────────────────────────────────────────
-FROM alpine:3.21
+FROM alpine:3.23.4
 
 # ── Pinned versions ──────────────────────────────────────────
 ARG TERRAFORM_VERSION=1.7.0
