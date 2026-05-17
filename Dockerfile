@@ -40,9 +40,12 @@ RUN wget -q "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terra
     && terraform version
 
 # ── Infracost (pinned, from release tarball — not GitHub Action) ──
-RUN curl -sL "https://github.com/infracost/infracost/releases/download/v${INFRACOST_VERSION}/infracost-linux-amd64.tar.gz" \
-      -o /tmp/infracost.tar.gz \
+RUN INFRACOST_URL="https://github.com/infracost/infracost/releases/download/v${INFRACOST_VERSION}/infracost-linux-amd64.tar.gz" \
+    && echo "Downloading: ${INFRACOST_URL}" \
+    && curl -sL "${INFRACOST_URL}" -o /tmp/infracost.tar.gz \
+    && ls -la /tmp/infracost.tar.gz \
     && tar -xzf /tmp/infracost.tar.gz -C /tmp \
+    && ls /tmp/infracost* \
     && mv /tmp/infracost-linux-amd64 /usr/local/bin/infracost \
     && chmod +x /usr/local/bin/infracost \
     && rm /tmp/infracost.tar.gz \
